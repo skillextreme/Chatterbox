@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Chat app using Socket IO and Node JS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+    <h1 class="font-bold text-red-500 text-3xl text-center mt-5">Chatterbox</h1>
+    <div class="max-w-2xl mx-auto bg-white shadow-md rounded-lg overflow-hidden mt-6">
+        <div class="bg-gray-200 text-gray-700 py-2 px-4">Chat App using Socket.io</div>
+        <div id="messageArea" class="p-4 h-96 overflow-y-scroll">
+            <!-- Messages will be added here -->
+        </div>
+        <form id="form" class="flex justify-between items-center p-4 border-t border-gray-200">
+            <input id="myname" type="text" placeholder="Name" class="rounded-lg p-2 border-gray-300 flex-grow mr-4" autocomplete="off">
+            <input id="message" type="text" placeholder="Message" class="rounded-lg p-2 border-gray-300 flex-grow mr-4" autocomplete="off">
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Send</button>
+        </form>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        let socket = io();
+
+        let form = document.getElementById('form');
+        let myname = document.getElementById('myname');
+        let message = document.getElementById('message');
+        let messageArea = document.getElementById("messageArea");
+
+        function addMessage(fromUser, msg) {
+            let isMine = fromUser === myname.value;
+            let msgDiv = document.createElement("div");
+            msgDiv.classList.add("p-2", "rounded-lg", "max-w-xs", "my-2", isMine ? "bg-blue-500" : "bg-gray-300", "text-white", "self-end");
+            msgDiv.textContent = `${fromUser}: ${msg}`;
+            messageArea.appendChild(msgDiv);
+            messageArea.scrollTop = messageArea.scrollHeight; // Scroll to bottom
+        }
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            if (message.value && myname.value) {
+                socket.emit('send chat', { name: myname.value, message: message.value });
+                message.value = "";
+            }
+        });
+
+        socket.on("chat message", ({name, message}) => {
+            addMessage(name, message);
+        });
+    </script>
+</body>
+
+</html>
