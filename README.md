@@ -21,7 +21,7 @@ Before you begin, ensure you have Node.js installed on your system. You can down
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/skillextreme/chat-app-socketio.git
+   https://github.com/skillextreme/Chatterbox.git
    ```
 
 2. Navigate to the project directory:
